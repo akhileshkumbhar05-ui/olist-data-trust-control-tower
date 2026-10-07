@@ -1,0 +1,23 @@
+# Governed metric dictionary
+
+The implementation is centralized in `src/olist/metrics/definitions.py`; UI pages do not define KPI formulas. App data services request these domain calculations over curated accepted Gold facts. Native Spark prepares the same Gold fields; parity tests verify identical metrics. All amounts are BRL. Zero denominators return unavailable, not a misleading zero.
+
+| Metric | Definition | Formula | Source / grain | Exclusions | Assumption | Owner |
+|---|---|---|---|---|---|---|
+| Total Orders | Accepted orders in selected purchase period | count(order_id) | gold.fact_orders; One accepted order | Quarantined orders and missing accepted customer | Historical purchase cohorts | Operations Analytics Owner |
+| Delivered Orders | Accepted orders with delivered status | sum(is_delivered) | gold.fact_orders; One accepted order | Other statuses | Final source status | Operations Analytics Owner |
+| Cancelled Orders | Accepted orders with canceled status | sum(is_cancelled) | gold.fact_orders; One accepted order | Other statuses | Final source status | Operations Analytics Owner |
+| Delivered Item GMV | Accepted item price on delivered orders in BRL | sum(item_gmv) where is_delivered | gold.fact_orders; One accepted order | Freight, canceled, unavailable, quarantined items | GMV is merchandise value, not recognized revenue | Operations Analytics Owner |
+| Delivered Freight | Accepted item freight on delivered orders | sum(freight_value) where is_delivered | gold.fact_orders; One accepted order | Other statuses | Freight is separate from merchandise GMV | Operations Analytics Owner |
+| Average Delivered Order Value | Delivered item GMV per delivered order with accepted items | delivered GMV / delivered orders with item_count > 0 | gold.fact_orders; One accepted order | Delivered orders without accepted items | No accounting revenue claim | Operations Analytics Owner |
+| On-Time Delivery Rate | Eligible deliveries on or before estimated calendar day | 100 * count(eligible and not late) / count(eligible) | gold.fact_orders; One accepted order | Non-delivered or missing delivery/estimate | Date-level deadline; source timezone unspecified | Operations Analytics Owner |
+| Late Delivery Rate | Eligible deliveries after estimated calendar day | 100 * count(eligible and late) / count(eligible) | gold.fact_orders; One accepted order | Non-eligible deliveries | Historical outcome, not live backlog | Operations Analytics Owner |
+| Average Delivery Time | Mean elapsed days purchase to delivery | avg(nonnegative delivery_days) | gold.fact_orders; One accepted order | Non-delivered or negative intervals | Elapsed days, not business days | Operations Analytics Owner |
+| Average Late Delivery Delay | Mean positive date-level delay among late deliveries | avg(delay_days) where is_late | gold.fact_orders; One accepted order | On-time and non-eligible | Calendar days | Operations Analytics Owner |
+| Average Latest Review Score | Mean latest answered accepted review per order | avg(review_score) | gold.fact_orders; One accepted order | No accepted review | Latest answer then review_id tie-breaker | Operations Analytics Owner |
+| Negative Review Rate | Latest accepted reviews rated 1 or 2 | 100 * count(review_score <= 2) / count(nonnull review_score) | gold.fact_orders; One accepted order | No review | One latest review per order | Operations Analytics Owner |
+| Repeat Customer Rate | Persistent customers with multiple accepted orders in selection | 100 * customers with >1 order / distinct customer_unique_id | gold.fact_orders; One accepted order | Missing persistent identity | Selection-dependent; customer_id is not persistent | Operations Analytics Owner |
+
+Seller/category/state ranking uses accepted item facts: distinct orders per segment for delivery/review outcomes, delivered item prices for segment GMV. Rank by late-order count and cohort size; expose eligible denominators and minimum-volume filters. Multi-seller/category orders can appear in several segment rows; segment order counts and review outcomes are not additive. Seller/category filters select whole associated orders for order KPIs, while segment GMV includes only the selected items.
+
+Dates are purchase cohorts; final historical outcomes are not as-of-date observations. Date-level on-time semantics avoid classifying delivery later on the estimated day as late. Negative delivery durations are excluded from averages and temporal violations remain visible as WARN. A healthy readiness state means required controls passed, not that every possible business error was disproven.

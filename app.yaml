@@ -1,0 +1,19 @@
+command:
+- streamlit
+- run
+- app/app.py
+- --server.address
+- 0.0.0.0
+- --server.port
+- '8000'
+- --server.headless
+- 'true'
+env:
+- name: OLIST_BACKEND
+  value: databricks
+- name: DATABRICKS_SQL_WAREHOUSE_ID
+  valueFrom: sql-warehouse
+- name: DATABRICKS_CATALOG
+  value: workspace
+- name: OLIST_SCHEMA_PREFIX
+  value: olist

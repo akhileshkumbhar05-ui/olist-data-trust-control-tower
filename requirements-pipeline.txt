@@ -1,0 +1,4 @@
+# Native Spark/Delta are provided by Databricks Serverless.
+kagglehub==0.3.13
+pandas==2.2.3
+pyarrow==19.0.1

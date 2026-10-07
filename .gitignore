@@ -1,0 +1,65 @@
+# Local secrets and credential stores. Keep only the nonsecret example template.
+.env
+.env.*
+!.env.example
+!.env.*.example
+secrets/
+.secrets/
+credentials/
+.credentials/
+credentials.json
+kaggle.json
+*.pem
+*.key
+*.p12
+*.pfx
+.aws/
+.azure/
+.kaggle/
+.databrickscfg
+.databricks/
+
+# Python environments, bytecode and package/build outputs.
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# Immutable downloaded sources, local snapshots and acquisition staging.
+data/
+raw_data/
+olist_raw/
+kaggle-cache/
+kaggle_cache/
+kagglehub/
+.cache/
+
+# Test, tooling and Spark artifacts.
+artifacts/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.nox/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+junit*.xml
+spark-warehouse/
+metastore_db/
+
+# Temporary/editor files and logs.
+tmp/
+temp/
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+*.log
+.DS_Store

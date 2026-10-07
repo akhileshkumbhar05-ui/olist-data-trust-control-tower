@@ -1,0 +1,3 @@
+-r requirements.txt
+# Databricks Runtime provides Spark and Delta; this is for native engine validation locally.
+pyspark==4.0.1

@@ -1,0 +1,93 @@
+bundle:
+  name: olist-data-trust-control-tower
+  databricks_cli_version: '>= 0.270.0'
+variables:
+  workspace_host:
+    description: Databricks workspace HTTPS URL (nonsecret)
+  warehouse_id:
+    description: Existing SQL warehouse ID
+  catalog:
+    default: workspace
+  schema_prefix:
+    default: olist
+  raw_volume:
+    default: raw
+  app_name:
+    default: olist-trust-control-tower
+  serverless_environment_version:
+    description: Serverless jobs environment version supported by your workspace
+    default: '2'
+workspace:
+  host: ${var.workspace_host}
+resources:
+  jobs:
+    olist_pipeline:
+      name: Olist historical operations and data trust
+      max_concurrent_runs: 1
+      parameters:
+      - name: batch_end
+        default: ''
+      tasks:
+      - task_key: medallion
+        spark_python_task:
+          python_file: ./pipelines/databricks_job.py
+          parameters:
+          - --catalog
+          - ${var.catalog}
+          - --prefix
+          - ${var.schema_prefix}
+          - --volume
+          - ${var.raw_volume}
+          - --batch-end
+          - '{{job.parameters.batch_end}}'
+        environment_key: olist_pipeline_env
+      environments:
+      - environment_key: olist_pipeline_env
+        spec:
+          environment_version: ${var.serverless_environment_version}
+          dependencies:
+          - kagglehub==0.3.13
+          - pandas==2.2.3
+          - pyarrow==19.0.1
+  apps:
+    control_tower:
+      name: ${var.app_name}
+      description: Historical Olist Operations and Data Trust Control Tower
+      source_code_path: .
+      resources:
+      - name: sql-warehouse
+        sql_warehouse:
+          id: ${var.warehouse_id}
+          permission: CAN_USE
+      config:
+        command:
+        - streamlit
+        - run
+        - app/app.py
+        - --server.address
+        - 0.0.0.0
+        - --server.port
+        - '8000'
+        - --server.headless
+        - 'true'
+        env:
+        - name: OLIST_BACKEND
+          value: databricks
+        - name: DATABRICKS_SQL_WAREHOUSE_ID
+          valueFrom: sql-warehouse
+        - name: DATABRICKS_CATALOG
+          value: ${var.catalog}
+        - name: OLIST_SCHEMA_PREFIX
+          value: ${var.schema_prefix}
+sync:
+  exclude:
+  - data/**
+  - artifacts/**
+  - .venv/**
+  - tests/**
+  - .pytest_cache/**
+  - requirements-dev.txt
+  - requirements-lock.txt
+targets:
+  dev:
+    default: true

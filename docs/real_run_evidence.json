@@ -1,0 +1,88 @@
+{
+  "run_id": "0c590b63fcbf4f3aa15ad994d80415f4",
+  "audit": {
+    "run_id": "0c590b63fcbf4f3aa15ad994d80415f4",
+    "status": "SUCCEEDED",
+    "started_at": "2026-10-07T21:50:04.771472+00:00",
+    "batch_start": "source inception",
+    "batch_end": "full historical snapshot",
+    "data_label": "REAL OLIST",
+    "records_received": 1550922,
+    "records_processed": 1550922,
+    "accepted_records": 1550890,
+    "quarantined_records": 32,
+    "failed_checks": 5,
+    "error_message": "",
+    "latest_source_event": "2018-10-17 17:30:18",
+    "ended_at": "2026-10-07T21:50:31.171743+00:00",
+    "duration_seconds": 26.400271
+  },
+  "quality_summary": {
+    "run_id": "0c590b63fcbf4f3aa15ad994d80415f4",
+    "readiness": "WARNING",
+    "quality_score": 99.9805,
+    "quarantined_records": 32,
+    "failed_rules": 5,
+    "data_label": "REAL OLIST",
+    "execution_timestamp": "2026-10-07T21:50:04.771472+00:00",
+    "critical_failures": 0
+  },
+  "metrics": {
+    "total_orders": 99433,
+    "delivered_orders": 96470,
+    "cancelled_orders": 625,
+    "gmv": 13220248.93,
+    "freight": 2198145.8999999994,
+    "aov": 137.0400013475692,
+    "on_time_rate": 93.22690992018244,
+    "late_rate": 6.7730900798175595,
+    "delivery_days": 12.558217098051976,
+    "delay_days": 10.620140801958984,
+    "review_score": 4.086352810013683,
+    "negative_review_rate": 14.689099478031723,
+    "repeat_customer_rate": 3.119015902089751
+  },
+  "failed_rules": [
+    {
+      "rule_id": "products.fk_product_category_name",
+      "records_failed": 13,
+      "severity": "MEDIUM",
+      "action": "WARN"
+    },
+    {
+      "rule_id": "products.category",
+      "records_failed": 610,
+      "severity": "MEDIUM",
+      "action": "WARN"
+    },
+    {
+      "rule_id": "orders.delivered_time",
+      "records_failed": 8,
+      "severity": "HIGH",
+      "action": "QUARANTINE"
+    },
+    {
+      "rule_id": "orders.lifecycle",
+      "records_failed": 1373,
+      "severity": "MEDIUM",
+      "action": "WARN"
+    },
+    {
+      "rule_id": "orders.payment_reconciliation",
+      "records_failed": 303,
+      "severity": "MEDIUM",
+      "action": "WARN"
+    }
+  ],
+  "quarantine_by_dataset": {
+    "order_items": 8,
+    "orders": 8,
+    "payments": 8,
+    "reviews": 8
+  },
+  "gold_grains": {
+    "fact_orders": 99433,
+    "fact_order_items": 112642,
+    "dim_geography": 19015
+  }
+}
