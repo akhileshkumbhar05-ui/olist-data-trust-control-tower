@@ -2,7 +2,7 @@
 
 A Databricks-native historical e-commerce POC that connects operational KPIs to quality controls, quarantined records, governance metadata, metric definitions, processing history and lineage paths.
 
-**Implemented and tested locally. Actual Kaggle files are now downloaded/profiled; live Databricks execution remains pending workspace URL, SQL warehouse and authentication.** The actual-data run and all ten app views are validated. A separate local rehearsal is prominently labeled DEMO / SYNTHETIC; it is not real Olist evidence. See [validation status](docs/VALIDATION.md) and [findings](docs/POC_FINDINGS.md).
+**Implemented, locally validated, and deployed as a live Databricks POC.** The real Olist pipeline has executed through the Serverless notebook path, creating Unity Catalog Volume/Delta Bronze, Silver, Gold and Quality assets. The Databricks App is deployed against an attached SQL warehouse and all ten views have been manually smoke-tested with REAL OLIST data. Local validation and synthetic rehearsal evidence remain separately documented. See [validation status](docs/VALIDATION.md) and [findings](docs/POC_FINDINGS.md).
 
 ## Quick start
 
@@ -65,8 +65,8 @@ The historical source is not live. Batch windows are cumulative purchase cohorts
 
 A critical failure or missing/erroring required check blocks new Gold publication. Prior metrics remain explicitly identified as previously published. Source snapshots and failures are retained for inspection. The quality score is equally weighted rule-record opportunity pass rate; repeated violations can count multiple times. Process readiness is a separate gate. Dependent-child quarantine is disclosed separately from direct rule scoring.
 
-The app uses a shared service principal in Databricks and exposes source payloads to approved reviewers. Restrict its audience. Bounded SQL results fail loudly on truncation; production volumes require server-side aggregation/pagination. Deployment schema validation is not proof of live compatibility.
+The app uses a shared service principal in Databricks and exposes source payloads to approved reviewers. Restrict its audience. Bounded SQL results fail loudly on truncation; production volumes require server-side aggregation/pagination. The current manual notebook/App deployment has been live-validated as a POC; bundle-based deployment, native lineage inspection and production readiness remain separate validation steps.
 
 See [architecture](docs/ARCHITECTURE.md), [governance](docs/GOVERNANCE_MODEL.md), [source profile status](docs/DATA_PROFILE.md), [DQ catalog](docs/DATA_QUALITY_RULES.md), [metrics](docs/METRIC_DICTIONARY.md), [lineage](docs/LINEAGE.md), [deployment steps](docs/DEPLOYMENT.md), and [productionization](docs/PRODUCTIONIZATION.md).
 
-The configured catalog default is `workspace`; `DATABRICKS_HOST` and `DATABRICKS_SQL_WAREHOUSE_ID` remain configurable. Serverless Jobs/notebooks do not require `DATABRICKS_CLUSTER_ID`. No Databricks resources were created in this cloud session. Configure workspace OAuth/service-principal access securely and supply nonsecret workspace/compute/warehouse identifiers before following the deployment runbook. Never paste secrets into chat or source files.
+The configured catalog default is `workspace`; `DATABRICKS_HOST` and `DATABRICKS_SQL_WAREHOUSE_ID` remain configurable and intentionally uncommitted. Serverless Jobs/notebooks do not require `DATABRICKS_CLUSTER_ID`. The current live POC used an existing Serverless notebook/Git-folder path, Unity Catalog assets, an existing SQL warehouse and a manually created Databricks App. The bundle remains a reproducible deployment definition but has not been exercised as the live deployment path. Never paste secrets into chat or source files.
