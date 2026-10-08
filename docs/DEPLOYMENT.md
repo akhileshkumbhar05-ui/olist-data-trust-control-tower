@@ -2,17 +2,17 @@
 
 ## Target and current status
 
-The known Unity Catalog catalog is `workspace`. The default job uses **Serverless Jobs**, so there is no cluster ID requirement. Existing Serverless notebooks can invoke the same native pipeline through `pipelines/serverless_notebook.py`. Serverless notebook access does not establish that Serverless Jobs or Databricks Apps are enabled; verify those capabilities in the workspace before deployment.
+The known Unity Catalog catalog is `workspace`. The repository supports **Serverless Jobs** through the bundle and an existing Serverless notebook through `pipelines/serverless_notebook.py`; neither path requires a classic cluster ID.
 
-Workspace URL and SQL warehouse ID remain unknown. They are configurable, not hardcoded. Live Databricks execution, UC/Delta writes, App OAuth/resource binding and native lineage remain unvalidated; no remote resources have been created.
+The current POC has now been deployed manually in Databricks. The existing Serverless notebook path executed the real Olist pipeline successfully and created/used the governed UC Volume plus Bronze, Silver, Gold and Quality Delta assets. The Databricks App was created/deployed from Git, attached to an existing SQL warehouse, granted least-privilege Gold/Quality reads through its service principal, and smoke-tested across all ten views. Exact workspace/warehouse identifiers remain environment-specific and intentionally uncommitted. Bundle-based Job/App deployment and native lineage inspection remain separate validation items.
 
 ## Nonsecret configuration
 
 | Name | Meaning / status |
 |---|---|
-| `DATABRICKS_HOST` | Workspace HTTPS base URL, pending; SDK/CLI native setting |
+| `DATABRICKS_HOST` | Workspace HTTPS base URL; known in the current deployed environment but intentionally not committed |
 | `DATABRICKS_CATALOG` | `workspace` by default; may be overridden |
-| `DATABRICKS_SQL_WAREHOUSE_ID` | Warehouse serving the app's curated queries, pending; injected via app resource when deployed |
+| `DATABRICKS_SQL_WAREHOUSE_ID` | Warehouse serving the app's curated queries; currently injected through the attached `sql-warehouse` App resource and intentionally not hardcoded |
 | `DATABRICKS_CLUSTER_ID` | Optional placeholder for explicitly configuring classic compute later; unused by default serverless bundle |
 | `DATABRICKS_SERVERLESS_ENVIRONMENT_VERSION` | Default `2`, configurable; choose a supported version in your workspace |
 | `OLIST_SCHEMA_PREFIX` / `OLIST_VOLUME` | `olist` / `raw` by default |
@@ -46,7 +46,7 @@ Use `databricks auth login --host "$DATABRICKS_HOST" --profile olist` and `datab
 
 ## Bundle commands
 
-Databricks CLI 0.270.0 or newer. The official checksum-verified v0.270.0 JSON schema validates the local bundle; this is not authenticated deployment validation.
+Databricks CLI 0.270.0 or newer. The official checksum-verified v0.270.0 JSON schema validates the local bundle. The current live POC was deployed through the Serverless notebook plus manual App-from-Git path, so the bundle itself has not yet been authenticated/deployed end to end.
 
 ```bash
 export DATABRICKS_HOST='https://YOUR-WORKSPACE-HOST'
@@ -70,7 +70,7 @@ Equivalent direct CLI commands use `BUNDLE_VAR_workspace_host`, `BUNDLE_VAR_cata
 
 Import/open `pipelines/serverless_notebook.py` in a Databricks Git folder containing this repository. Configure its notebook environment with the pinned libraries listed in `requirements-pipeline.txt` once; no per-run ad-hoc installation is part of the pipeline. Set `repository_root` widget to the actual Git folder checkout root. Catalog defaults to `workspace`; schema prefix, Volume and purchase cutoff are widgets. Execute the notebook. This path needs no external workspace credential, SQL warehouse or classic cluster; it needs the pipeline UC permissions and Kaggle egress. Install the declared requirements file using the workspace-supported notebook environment workflow if libraries are absent.
 
-The native job avoids DataFrame caching and classic `SparkContext` APIs to accommodate Serverless/Spark Connect restrictions. Bronze writes materialize source row surrogates before DQ reads; audit updates use SQL MERGE. Live platform support still requires actual workspace execution.
+The native job avoids DataFrame caching and classic `SparkContext` APIs to accommodate Serverless/Spark Connect restrictions. Bronze writes materialize source row surrogates before DQ reads; audit updates use SQL MERGE. This Serverless notebook path has now executed successfully in the current workspace against the real Olist source.
 
 ## App and readiness checks
 
