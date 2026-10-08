@@ -1,6 +1,6 @@
 # Lineage and traceability
 
-The app exposes a simplified **declared** business path; it does not pretend this is a captured execution graph. Native Spark reads/writes use qualified UC tables. After a live run, inspect Catalog Explorer → table → Lineage for actual table/column lineage. No native lineage has yet been validated in a workspace.
+The app exposes a simplified **declared** business path; it does not pretend this is a captured execution graph. Native Spark reads/writes use qualified UC tables, and the pipeline has now executed successfully in the live Databricks workspace. Native Catalog Explorer table/column lineage coverage has not yet been manually recorded; inspect Catalog Explorer → table → Lineage before making claims about captured native lineage.
 
 Example: `olist_orders_dataset.csv.order_purchase_timestamp` → `/Volumes/<catalog>/<prefix>_bronze/<volume>/olist_orders_dataset.csv` → `<catalog>.<prefix>_bronze.orders.order_purchase_timestamp` (string plus run/file metadata) → required/parse/lifecycle controls → `<catalog>.<prefix>_silver.orders.order_purchase_timestamp` (timestamp) → `<catalog>.<prefix>_gold.fact_orders.purchase_date` (calendar date) → order-cohort selection → Total Orders / order trend → Executive Overview.
 
