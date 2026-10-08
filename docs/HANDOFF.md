@@ -1,6 +1,6 @@
 # Engineering handoff
 
-Built and locally validated the actual-data Operations & Data Trust product. **Live Databricks deployment is outstanding** because workspace URL, SQL warehouse ID and authenticated access are not yet available. The known catalog is `workspace`; default Serverless Jobs/notebook paths do not need a cluster ID.
+Built, locally validated and **live-deployed as a Databricks POC**. The real Olist pipeline has executed through the existing Serverless notebook path, governed UC/Delta assets were created, and the SQL-backed Databricks App is running against those live outputs. The known catalog is `workspace`; the Serverless notebook path does not need a classic cluster ID.
 
 | Requested handoff item | Delivered / evidence |
 |---|---|
@@ -8,7 +8,7 @@ Built and locally validated the actual-data Operations & Data Trust product. **L
 | Architecture selection | Entire deployed path inside Databricks: KaggleHub → UC Volume → Spark/Delta layers and Quality → SQL warehouse → Databricks App; Parquet harness for isolated local validation |
 | Repository structure | `src/olist` domain modules; `app/views/services/components`; `pipelines`; `scripts`; `sql`; `tests`; `docs`; manifests and declared pinned dependencies |
 | Databricks resources required | Existing `workspace` catalog, Serverless Jobs or an existing Serverless notebook, SQL warehouse, enabled Databricks Apps; dedicated `olist_*` schemas/raw Volume/tables created by pipeline |
-| Remote resources actually created | **None**; no authenticated workspace execution. Local raw files, profiles, curated snapshots and app validation are actual executed work |
+| Live resources actually created/used | `olist_bronze`, `olist_silver`, `olist_gold`, `olist_quality`, governed raw Volume, Delta facts/dimensions and Quality/audit tables, `published_run`, an existing SQL warehouse resource, and the deployed Databricks App |
 | Dataset profile summary | Nine sources fully scanned; 99,441 orders, 112,650 items, 103,886 payments, 99,224 reviews, 1,000,163 geolocation observations; full fields/counts in DATA_PROFILE |
 | Confirmed grains | Unique orders/customer/product/seller IDs, order/item and order/payment-sequence pairs, review/order pair, source-category translation; geolocation remains observation grain |
 | Confirmed cardinalities | 2,961 multi-payment, 547 multi-review, 1,278 multi-seller orders; 814 repeated review IDs; 17,781 ZIPs with multiple coordinates; child raw FKs have zero orphans except 13 product translations |
@@ -21,19 +21,17 @@ Built and locally validated the actual-data Operations & Data Trust product. **L
 | Business metrics | 13 centralized definitions/formulas: orders/delivered/canceled, delivered GMV/freight/AOV, on-time/late rates, delivery duration/delay, latest/negative reviews, persistent repeat-customer rate; segment rankings |
 | App pages | Executive, Operations, DQ, Incident, Quarantine, Governance, Metric Dictionary, Lineage / Trust, Pipeline Health, Methodology; all ten exercised against actual curated outputs |
 | Test results | **47 isolated tests passed**; 3 native Spark tests included; actual full source/profile/pipeline and ten actual UI page checks also passed; VALIDATION |
-| Deployment status | Serverless bundle passes official CLI JSON schema; environment names mapped; notebook path implemented; authenticated validate/deploy/run outstanding |
-| Implemented, not live validated | UC Volume/Delta integration, serverless workspace task compatibility, native comments/lineage, App resource/OAuth injection, warehouse SQL queries and UC/app grants |
+| Deployment status | Live Serverless notebook path and manual App-from-Git deployment passed. The App queries live Gold/Quality through an attached SQL warehouse. Bundle-based Job/App deployment remains unexercised |
+| Remaining live validation | Native Catalog Explorer lineage inspection, bundle-based Job/App deployment, production user-specific authorization/masking, enterprise retention policy and production operational controls |
 | Known limits | Historical cumulative purchase cohorts, no CDC/as-of claim; source time/accounting assumptions; bounded app queries, shared app principal, no remediation workflow; native lineage must be inspected |
 | Productionization | Real source CDC, stable offsets, server-side aggregates, separate environments/identities, privacy enforcement, SLOs/alerting, incident resolution/replay, CI/CD and retention policies |
 | Run/deploy commands | README local workflow; DEPLOYMENT maps requested variables, exact commands, UI locations and least-privilege resource requirements |
 | Polished five-minute demo | DEMO_SCRIPT now uses three **actual** findings: traceable GMV/on-time KPI, missing-delivery quarantine, RJ/SP or seller investigation; synthetic fixtures are separate |
 
-## Configuration and next authenticated step
+## Current configuration and remaining deployment work
 
-`DATABRICKS_CATALOG=workspace` is known. `DATABRICKS_HOST` and `DATABRICKS_SQL_WAREHOUSE_ID` are pending nonsecret settings. `DATABRICKS_CLUSTER_ID` is optional and unused for serverless. `DATABRICKS_SERVERLESS_ENVIRONMENT_VERSION` selects a supported Jobs environment. Legacy config names remain compatible.
+`DATABRICKS_CATALOG=workspace` is the current catalog. The current workspace host and SQL warehouse are known to the deployed environment but intentionally not committed to source. `DATABRICKS_CLUSTER_ID` remains unused for the Serverless path. `DATABRICKS_SERVERLESS_ENVIRONMENT_VERSION` applies to the optional bundle Job path; the notebook environment is configured separately.
 
-Find workspace URL in the browser's base HTTPS address; find warehouse ID under SQL → SQL Warehouses → selected warehouse → Connection details. Serverless notebooks have no classic cluster ID. DEPLOYMENT lists UI paths, Serverless Jobs checks and minimum deployment/pipeline/app permissions. Configure authentication in secure settings; never paste tokens/client secrets into chat or source code.
+The current native execution path is validated: the existing Serverless notebook needs the repository, declared pipeline dependencies, UC permissions and Kaggle egress, but no external workspace token or SQL warehouse. The deployed App uses its attached SQL warehouse plus its generated service principal and Gold/Quality read grants.
 
-Continue local development without these identifiers. For native execution, the existing Serverless notebook entrypoint only needs repository/dependencies and UC permissions inside the workspace; it does not need an external token or warehouse. The deployed App still needs a SQL warehouse and its own read grants.
-
-The actual data/profile/UI evidence is local, not a claim that remote UC objects or captured lineage already exist. After authenticated execution, inspect audit, facts, quarantine, App pages, permissions and native lineage before calling the Databricks POC deployed.
+The POC can now be called deployed. Remaining platform work is to inspect and document native lineage, optionally exercise the bundle-based Job/App deployment path, and move any production deployment into organization-managed identities, policies and environments.
