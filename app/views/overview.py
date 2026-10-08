@@ -25,7 +25,7 @@ def render(service):
     fact, _ = service.filtered_facts()
     trend = fact.groupby("purchase_date").size().reset_index(name="orders")
     with left:
-        st.plotly_chart(px.line(trend, x="purchase_date", y="orders", title="Accepted order volume by purchase date", color_discrete_sequence=["#147d92"]), width="stretch")
+        st.plotly_chart(px.line(trend, x="purchase_date", y="orders", title="Accepted order volume by purchase date", color_discrete_sequence=["#147d92"]), config={"responsive": True})
     with right:
         st.markdown("**Investigation priorities**")
         ranking = service.rankings("seller_id")

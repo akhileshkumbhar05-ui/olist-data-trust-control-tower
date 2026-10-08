@@ -6,7 +6,7 @@ Built and locally validated the actual-data Operations & Data Trust product. **L
 |---|---|
 | What was built | Ten-view interactive control tower, 88-rule DQ framework, retained quarantine/violations, medallion pipeline, governed metrics, operational audit, governance and native deployment assets |
 | Architecture selection | Entire deployed path inside Databricks: KaggleHub → UC Volume → Spark/Delta layers and Quality → SQL warehouse → Databricks App; Parquet harness for isolated local validation |
-| Repository structure | `src/olist` domain modules; `app/pages/services/components`; `pipelines`; `scripts`; `sql`; `tests`; `docs`; manifests and declared pinned dependencies |
+| Repository structure | `src/olist` domain modules; `app/views/services/components`; `pipelines`; `scripts`; `sql`; `tests`; `docs`; manifests and declared pinned dependencies |
 | Databricks resources required | Existing `workspace` catalog, Serverless Jobs or an existing Serverless notebook, SQL warehouse, enabled Databricks Apps; dedicated `olist_*` schemas/raw Volume/tables created by pipeline |
 | Remote resources actually created | **None**; no authenticated workspace execution. Local raw files, profiles, curated snapshots and app validation are actual executed work |
 | Dataset profile summary | Nine sources fully scanned; 99,441 orders, 112,650 items, 103,886 payments, 99,224 reviews, 1,000,163 geolocation observations; full fields/counts in DATA_PROFILE |

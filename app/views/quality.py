@@ -15,10 +15,10 @@ def command_center(service):
     st.dataframe(score, hide_index=True, width="stretch")
     failed = results[results.records_failed.gt(0)]
     if len(failed):
-        st.plotly_chart(px.bar(failed.groupby(["severity", "rule_type"]).records_failed.sum().reset_index(), x="rule_type", y="records_failed", color="severity", title="Failures by rule category"), width="stretch")
+        st.plotly_chart(px.bar(failed.groupby(["severity", "rule_type"]).records_failed.sum().reset_index(), x="rule_type", y="records_failed", color="severity", title="Failures by rule category"), config={"responsive": True})
     history = service.quality_history()
     if len(history) > 1:
-        st.plotly_chart(px.line(history, x="execution_timestamp", y="quality_score", title="Quality score across processing attempts"), width="stretch")
+        st.plotly_chart(px.line(history, x="execution_timestamp", y="quality_score", title="Quality score across processing attempts"), config={"responsive": True})
     st.dataframe(results[["rule_id", "dataset", "rule_name", "rule_type", "severity", "action", "status", "records_evaluated", "records_failed", "failure_percentage", "run_id"]], hide_index=True, width="stretch")
     st.caption("Inspect a failure in Quality Incident Detail. Score = 100 × (1 − failed rule-record opportunities / evaluated opportunities); no hidden severity weights.")
 

@@ -47,7 +47,7 @@ KaggleHub is staging, not the governed raw store. The local harness retains exac
 ## Structure
 
 ```text
-app/                  Streamlit pages, components and curated data service
+app/                  Streamlit views, components and curated data service
 src/olist/            Configuration, ingestion/profile, DQ, transformations,
                       governed metrics, governance and observability
 pipelines/            Native Databricks PySpark/Delta job

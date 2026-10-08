@@ -6,7 +6,7 @@ sys.path[:0] = [str(ROOT / "src"), str(ROOT)]
 import streamlit as st
 from app.services.data import DataService
 from app.components.common import status_banner
-from app.pages import overview, operations, quality, governance
+from app.views import overview, operations, quality, governance
 
 st.set_page_config(page_title="Olist · Operations & Data Trust", page_icon="◈", layout="wide")
 st.markdown("""<style>.block-container{padding-top:2rem;max-width:1500px}h1{letter-spacing:-.035em}div[data-testid='stMetric']{background:#f1f5f9;border-radius:10px;padding:18px;color:#16324f}div[data-testid='stMetricLabel']{color:#47647b}</style>""", unsafe_allow_html=True)
