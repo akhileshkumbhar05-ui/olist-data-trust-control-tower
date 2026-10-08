@@ -1,6 +1,6 @@
 # Five-minute VP Operations demo — actual Olist findings
 
-Validated locally using actual Kaggle Olist version 2, full accepted cohort, run `0c590b63fcbf4f3aa15ad994d80415f4`. Start the real-data app with `OLIST_DATA_ROOT=data streamlit run app/app.py`; verify its label is **REAL OLIST**, not DEMO / SYNTHETIC. Deployed Databricks validation is still pending. The dataset is historical, not live operations.
+Validated locally using actual Kaggle Olist version 2 and now deployed in Databricks. The retained local evidence run is `0c590b63fcbf4f3aa15ad994d80415f4`; the current live successful quality run is `6cbe3a7f950346aea297f606274f3695`. For the live demo, open the deployed Databricks App and verify its label is **REAL OLIST**, not DEMO / SYNTHETIC. The dataset is historical, not live operations.
 
 ## 0:00–1:30 — Scenario 1: the metric and its trust evidence
 
@@ -8,7 +8,7 @@ Open Executive Overview. Say: “This product connects operational outcomes to t
 
 Point to Delivered Item GMV, **BRL 13.22 million**, and **93.23% on-time delivery**. “GMV is delivered merchandise value, excluding freight; it is not accounting revenue. On-time compares calendar delivery dates to estimated dates.”
 
-Point to **WARNING** and zero critical failures. “The data product exposes uncertainty alongside the KPI. A high opportunity-based score does not hide failed controls.” Open Metric Dictionary and select Total Orders or Delivered Item GMV: definition, owner, grain, formula and exclusions. Open Lineage / Trust: source CSV → governed raw landing design → Bronze → controls → Silver → Gold → metric → UI. Explain that this local demo displays declared paths; native UC lineage is verified after workspace execution.
+Point to **WARNING** and zero critical failures. “The data product exposes uncertainty alongside the KPI. A high opportunity-based score does not hide failed controls.” Open Metric Dictionary and select Total Orders or Delivered Item GMV: definition, owner, grain, formula and exclusions. Open Lineage / Trust: source CSV → governed raw landing design → Bronze → controls → Silver → Gold → metric → UI. Explain that the app displays declared business lineage; the pipeline has executed through UC tables, but native Catalog Explorer lineage coverage has not yet been manually recorded.
 
 ## 1:30–3:15 — Scenario 2: a real quality incident and its retained records
 
@@ -28,12 +28,12 @@ Say: “SP has more late deliveries by count; RJ has a higher late rate. We can 
 
 Optionally choose Seller with All filters: seller `4a3ca9315b744ce9f8e9374361493884` has **172 late deliveries / 1,772 eligible (9.71%)**. “This identifies a cohort to investigate; it does not prove seller fault. Multi-seller cohorts overlap.”
 
-## 4:30–5:00 — Governance and the next deployment step
+## 4:30–5:00 — Governance and current deployment status
 
 Open Data Governance and Pipeline Health. “We retain source checksums, versioned quality controls, original violations, explicit metric definitions and processing history. The app reads curated facts and quality outputs, never raw CSVs.”
 
-End: “The real source, local medallion pipeline and all ten views are validated. The next step is authenticated execution in your Databricks workspace to verify UC objects, Serverless Job, SQL access, App permissions and captured native lineage. Catalog defaults to workspace; no classic cluster is required.”
+End: “The real source, Databricks medallion pipeline and all ten application views are now running as a live POC. The App reads governed Gold/Quality through the SQL warehouse using its service principal. Remaining platform validation is native lineage inspection and, if desired, exercising the bundle-based deployment path; production controls remain a separate step.”
 
 ## Demo safeguards
 
-The figures belong to the documented run/definitions and may change if gates, filters or source versions change. Compare the UI's run ID with `docs/real_run_evidence.json` before presenting. Source files are historical; do not describe backlog as current/live. Distinguish declared local paths from executed native lineage. The separate `--demo` negative-price fixture remains clearly labeled DEMO / SYNTHETIC and must not be used to represent actual Olist incidents.
+The figures belong to the documented run/definitions and may change if gates, filters or source versions change. For the live demo, use the run ID shown in the App/Pipeline Health. `docs/real_run_evidence.json` is intentionally a separate local-validation artifact and therefore has a different run ID. Source files are historical; do not describe backlog as current/live. Distinguish declared local paths from executed native lineage. The separate `--demo` negative-price fixture remains clearly labeled DEMO / SYNTHETIC and must not be used to represent actual Olist incidents.
