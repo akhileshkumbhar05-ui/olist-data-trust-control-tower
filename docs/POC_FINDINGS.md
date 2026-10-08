@@ -2,7 +2,7 @@
 
 Kaggle public dataset `olistbr/brazilian-ecommerce`, downloaded version 2, profiled in full on 2026-10-07. Raw CSVs and SHA-256 manifest are retained under ignored `data/raw`; no source changes were made. Machine-readable full-file evidence is in `data_profile.json`; local curated-run evidence is in `real_run_evidence.json`.
 
-The actual run ID is `0c590b63fcbf4f3aa15ad994d80415f4`. These findings are **actual historical source/local pipeline observations**, not synthetic fixtures or live Databricks results.
+The retained local evidence run ID is `0c590b63fcbf4f3aa15ad994d80415f4`. The same real source and rule set have now also executed in Databricks; the live successful run is `6cbe3a7f950346aea297f606274f3695`. The findings below come from actual historical Olist data, not synthetic fixtures. `real_run_evidence.json` remains the reproducible local-evidence artifact, while the deployed App reads the live Gold/Quality Delta snapshot selected by `published_run`.
 
 ## Source grains and relationships
 
@@ -36,7 +36,7 @@ All 88 controls executed. Five rules failed; no critical rule failed. The produc
 
 Eight bad delivered orders are excluded from Silver; eight associated items, eight payment rows and eight reviews enter accepted-parent quarantine. Total distinct quarantined source records = **32** across four datasets. Every exclusion has a record/run/rule/reason and original payload. Received **1,550,922** = accepted source records **1,550,890** + quarantined **32**, before intentional geolocation aggregation. Silver geography canonicalizes accepted observations into **19,015 ZIP rows**.
 
-The successful full local pipeline took 26.40 seconds. Gold has **99,433 order-grain rows** and **112,642 order/item-grain rows**, with explicit key/count checks. Raw source maximum purchase timestamp is historical 2018-10-17; this is event coverage, not live freshness.
+The successful full local pipeline took 26.40 seconds. The live Serverless notebook run processed the same 1,550,922 source records and completed in about 567 seconds, including live landing/Delta/serverless overhead. Gold has **99,433 order-grain rows** and **112,642 order/item-grain rows**, with explicit key/count checks. Raw source maximum purchase timestamp is historical 2018-10-17; this is event coverage, not live freshness.
 
 ## Actual operational findings from accepted Gold
 
@@ -64,8 +64,8 @@ For an actual operational investigation, customer state **RJ** has 12,350 eligib
 
 `tests/fixtures.py` supplies isolated DEMO / SYNTHETIC data, including an injected negative-price item for rejection tests. Those amounts and failures are never included in real findings. The clean fixture validates known GMV BRL 350; the deliberately invalid demo fixture yields BRL 300 after rejection. Duplicate-key fixtures verify blocked publication without altering actual data.
 
-## Remaining live validation and limitations
+## Live deployment status and remaining limitations
 
-No Databricks workspace URL/authentication/warehouse ID is available; no remote UC objects, Job, App, warehouse grants or native lineage were created/verified. The bundle defaults to configurable `workspace` catalog and Serverless Jobs; no cluster ID is needed. Native Spark logic is tested locally, while real full-file pipeline/UI validation uses the Parquet development harness.
+The Databricks POC is now live through the existing Serverless notebook path and a manually deployed Databricks App. The live run created/used the governed raw Volume plus Bronze, Silver, Gold and Quality Delta assets in the `workspace` catalog. The App is attached to an existing SQL warehouse and its service principal has the minimum POC reads on Gold/Quality. All ten views were manually smoke-tested against the live REAL OLIST snapshot. The bundle-based Job/App path has not been exercised, and native Catalog Explorer lineage coverage has not yet been recorded.
 
-The source is historical and cumulative simulation is not CDC or a point-in-time reconstruction. The app loads bounded curated results; larger/native results may need SQL aggregation/pagination. Payment/lifecycle semantics and source timezone are not business-owner-certified. Sensitivity properties are descriptive until administrators enforce grants/masking. Source row surrogates are run-local. Three actual-source demo scenarios are now documented, but live Databricks delivery still requires the deployment runbook.
+The source is historical and cumulative simulation is not CDC or a point-in-time reconstruction. The app loads bounded curated results; larger production results need server-side SQL aggregation/pagination. Payment/lifecycle semantics and source timezone are not business-owner-certified. Classification/owner properties are governance metadata, while production masking, user-specific authorization, retention/deletion policy and enterprise ownership remain organizational controls. Source row surrogates are run-local. The current deployment is a validated POC, not a production system.
